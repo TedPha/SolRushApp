@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Madencilik Paneli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Madencilik Paneli</h1>
+        <p>Mevcut Bakiyeniz: <span id="balance">0</span> token</p>
+        <p>Madencilik Hızınız: <span id="speed">10</span> token/saat</p>
+        <button onclick="startMining()">Madenciliği Başlat</button>
+    </div>
+
+    <script>
+        let balance = 0;
+        const speed = 10;
+
+        function startMining() {
+            alert("Madencilik başladı!");
+            setInterval(() => {
+                balance += speed;
+                document.getElementById("balance").innerText = balance;
+            }, 3600000); // Saatlik kazanç
+        }
+    </script>
+</body>
+</html>
