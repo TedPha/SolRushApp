@@ -33,7 +33,7 @@
         <h1>Madencilik Paneli</h1>
         <p>Kazım Gücünüz: <span id="mining-speed">5</span> GH/s</p>
         <p>Mevcut Bakiyeniz: <span id="balance">0.00</span> token</p>
-        <p>Kalan Süre: <span id="remaining-time">0 saat</span></p>
+        <p>Kalan Süre: <span id="remaining-time">6 saat</span></p>
         <button id="start-mining" onclick="startMining()">Madenciliği Başlat</button>
         <button id="stop-mining" onclick="stopMining()">Madenciliği Durdur</button>
     </div>
@@ -43,6 +43,31 @@
         let balance = 0; // Kullanıcının mevcut bakiyesi
         let miningInterval = null; // Madencilik işlemi için interval
         let remainingTime = 6 * 60 * 60; // 6 saat (saniye cinsinden)
+
+        async function sendDataToTelegram(action, data) {
+            const telegramInitData = window.Telegram.WebApp.initData;
+            if (!telegramInitData) {
+                console.error("Telegram Web App başlatılamadı.");
+                return;
+            }
+
+            const payload = {
+                action,
+                data,
+            };
+
+            try {
+                await fetch("https://YOUR_SERVER_URL/telegram-sync", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
+            } catch (error) {
+                console.error("Telegram ile veri gönderme hatası:", error);
+            }
+        }
 
         function updateUI() {
             document.getElementById("mining-speed").innerText = miningSpeed;
@@ -57,6 +82,8 @@
             }
 
             alert("Madencilik başladı!");
+            sendDataToTelegram("start", { miningSpeed, remainingTime });
+
             miningInterval = setInterval(() => {
                 if (remainingTime <= 0) {
                     stopMining();
@@ -80,6 +107,7 @@
             clearInterval(miningInterval);
             miningInterval = null;
             alert("Madencilik durduruldu!");
+            sendDataToTelegram("stop", { balance });
         }
 
         // İlk arayüz güncellemesi
